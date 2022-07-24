@@ -1,0 +1,27 @@
+name: Go
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Set up Go
+      uses: actions/setup-go@v3
+      with:
+        go-version: 1.18
+
+    - name: Build
+      env:
+        IMAGE: snelk/goservice_test_task
+        TAG: latest
+        DOCKER_LOGIN: ${{ secrets.DOCKER_LOGIN }}
+        DOCKER_TOKEN: ${{ secrets.DOCKER_TOKEN }}
+      run: |
+        docker login -u $DOCKER_LOGIN -p $DOCKER_TOKEN
+        docker build . -t $IMAGE:$TAG
+        docker push $IMAGE:$TAG
+        docker rmi $IMAGE:$TAG
