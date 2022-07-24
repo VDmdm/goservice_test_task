@@ -4,7 +4,7 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/insanrizky/golang-webservice-example/controller"
+	user "github.com/VDmdm/goservice_test_task/controller"
 )
 
 func main() {

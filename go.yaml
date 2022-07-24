@@ -1,0 +1,42 @@
+version: "3.3"
+services:
+  nginx:
+    build: ./nginx
+    restart: always
+    ports:
+      - "80:80"
+      - "443:443"
+    depends_on:
+      app:
+        condition: service_healthy
+  app:
+    build: ./
+    restart: always
+    depends_on:
+      mysql:
+        condition: service_healthy
+    env_file:
+      - .env
+    healthcheck:
+      test: ["CMD-SHELL", "wget localhost:9090 --spider || exit 1"]
+      timeout: 5s
+      interval: 5s
+      retries: 10
+  mysql:
+    image: mysql:8.0.29
+    volumes:
+      - "db:/var/lib/mysql"
+      - ./db/golang.sql:/docker-entrypoint-initdb.d/golang.sql
+    restart: always
+    environment:
+      - MYSQL_ALLOW_EMPTY_PASSWORD=true
+      - MYSQL_USER=${DB_USER}
+      - MYSQL_DATABASE=${DB_NAME}
+      - MYSQL_PASSWORD=${DB_PASSWORD}
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h localhost || exit 1"]
+      timeout: 10s
+      interval: 5s
+      retries: 10
+volumes:
+  db:

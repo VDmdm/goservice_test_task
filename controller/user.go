@@ -9,7 +9,8 @@ import (
 
 	"encoding/json"
 
-	config "github.com/insanrizky/golang-webservice-example/config"
+	config "github.com/VDmdm/goservice_test_task/config"
+
 	"golang.org/x/crypto/bcrypt"
 )
 
